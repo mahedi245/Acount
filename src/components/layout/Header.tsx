@@ -46,7 +46,7 @@ export default function Header() {
   );
 
   return (
-    <header className="sticky top-0 z-30 h-16 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 lg:px-8 flex items-center justify-between shadow-sm no-print">
+    <header className="sticky top-0 z-30 h-16 bg-white/90 backdrop-blur-md border-b border-slate-200/80 px-4 lg:px-8 flex items-center justify-between shadow-sm no-print print:hidden">
       {/* Left side: Hamburger & Title */}
       <div className="flex items-center gap-3">
         <button

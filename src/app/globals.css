@@ -165,7 +165,9 @@ body {
 
   /* Tables in Print Mode */
   table {
+    table-layout: fixed !important; /* Force table to strictly obey 100% width and not expand past A4 */
     width: 100% !important;
+    max-width: 100% !important;
     border-collapse: collapse !important;
     page-break-inside: auto;
     break-inside: auto;
@@ -190,16 +192,20 @@ body {
     color: #ffffff !important;
     font-weight: 700 !important;
     border: 1px solid #0f172a !important;
-    padding: 4px 6px !important;
+    padding: 4px !important; /* Reduced padding further */
     font-size: 8pt !important;
     line-height: 1.2 !important;
+    word-break: break-word !important;
+    white-space: normal !important;
   }
 
   td {
     border: 1px solid #cbd5e1 !important;
-    padding: 4px 6px !important;
+    padding: 4px !important; /* Reduced padding further */
     font-size: 8pt !important;
     line-height: 1.25 !important;
+    word-break: break-word !important;
+    white-space: normal !important;
   }
 
   /* High contrast table borders fallback if backgrounds are disabled by user printer */

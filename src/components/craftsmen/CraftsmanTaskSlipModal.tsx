@@ -34,7 +34,7 @@ export default function CraftsmanTaskSlipModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-sm overflow-y-auto printable-modal-overlay">
       <div className="bg-white rounded-3xl max-w-3xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-200 printable-modal print:m-0 print:border-none print:shadow-none print:w-full print:max-w-none print:max-h-none">
         {/* Modal Top Control Bar (Hidden on print) */}
-        <div className="no-print p-4 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur z-10">
+        <div className="no-print print:hidden p-4 border-b border-slate-100 flex items-center justify-between sticky top-0 bg-white/95 backdrop-blur z-10">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-xl bg-red-50 text-red-600 flex items-center justify-center font-bold">
               <Hammer className="w-4 h-4" />

@@ -29,7 +29,7 @@ export default function ChallanPrintView({ challan, order, onBack }: ChallanPrin
   return (
     <div className="space-y-6 text-left max-w-4xl mx-auto">
       {/* Top action bar (hidden on print) */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print print:hidden bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
         <button
           onClick={onBack}
           className="flex items-center gap-2 text-xs font-bold text-slate-700 hover:text-slate-900 transition-colors w-fit"

@@ -33,7 +33,7 @@ export default function InvoicePrintView({ order, onBack }: InvoicePrintViewProp
   return (
     <div className="space-y-6 text-left">
       {/* Top Controls (hidden on print) */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 no-print print:hidden bg-white p-4 rounded-2xl border border-slate-200 shadow-sm">
         {onBack && (
           <button
             onClick={onBack}

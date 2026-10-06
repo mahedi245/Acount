@@ -42,7 +42,7 @@ export default function MoneyReceiptPrintModal({
       {/* Modal Dialog Content */}
       <div className="relative w-full max-w-3xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-8 printable-modal print:m-0 print:border-none print:shadow-none print:w-full print:max-w-none">
         {/* Top Modal Bar (hidden during print) */}
-        <div className="flex items-center justify-between p-4 bg-slate-900 text-white no-print">
+        <div className="flex items-center justify-between p-4 bg-slate-900 text-white no-print print:hidden">
           <div className="flex items-center gap-2">
             <DollarSign className="w-5 h-5 text-emerald-400" />
             <h3 className="text-sm font-bold tracking-wide uppercase">

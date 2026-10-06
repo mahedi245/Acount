@@ -43,7 +43,7 @@ export default function CommissionVoucherModal({
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-slate-900/70 backdrop-blur-sm overflow-y-auto printable-modal-overlay">
       <div className="relative w-full max-w-4xl bg-white rounded-3xl shadow-2xl border border-slate-200 overflow-hidden my-8 printable-modal print:m-0 print:border-none print:shadow-none print:w-full print:max-w-none">
         {/* Top Control Bar (Hidden on print) */}
-        <div className="flex items-center justify-between p-4 bg-slate-900 text-white no-print">
+        <div className="flex items-center justify-between p-4 bg-slate-900 text-white no-print print:hidden">
           <div className="flex items-center gap-2">
             <Award className="w-5 h-5 text-amber-400" />
             <h3 className="text-sm font-bold tracking-wide uppercase">
