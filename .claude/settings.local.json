@@ -1,0 +1,30 @@
+{
+  "permissions": {
+    "allow": [
+      "PowerShell(node -v)",
+      "PowerShell(npm -v)",
+      "PowerShell(npm install)",
+      "PowerShell(npm run build)",
+      "PowerShell(\\(Invoke-WebRequest -Uri \"http://localhost:61641/marketing\" -UseBasicParsing\\).StatusCode)",
+      "PowerShell($routes = @\\('/', '/marketing', '/quotations', '/orders', '/accounts', '/settings'\\); foreach \\($r in $routes\\) { $status = \\(Invoke-WebRequest -Uri \"http://localhost:61641$r\" -UseBasicParsing\\).StatusCode; \"$r -> $status\" })",
+      "PowerShell(\\(Invoke-WebRequest -Uri \"http://localhost:61641/rules-book\" -UseBasicParsing\\).StatusCode)",
+      "PowerShell(\\(Invoke-WebRequest -Uri \"http://localhost:3000/rules-book\" -UseBasicParsing\\).StatusCode)",
+      "PowerShell($routes = @\\('/', '/rules-book', '/marketing', '/quotations', '/orders', '/production', '/craftsmen', '/attendance', '/delivery', '/accounts', '/settings'\\); foreach \\($r in $routes\\) { $status = \\(Invoke-WebRequest -Uri \"http://localhost:3000$r\" -UseBasicParsing\\).StatusCode; \"$r -> $status\" })",
+      "PowerShell($resHome = \\(Invoke-WebRequest -Uri \"http://localhost:3000/\" -UseBasicParsing\\).StatusCode; $resAcc = \\(Invoke-WebRequest -Uri \"http://localhost:3000/accounts\" -UseBasicParsing\\).StatusCode; $resRules = \\(Invoke-WebRequest -Uri \"http://localhost:3000/rules-book\" -UseBasicParsing\\).StatusCode; \"Home: $resHome | Accounts: $resAcc | Rules: $resRules\")",
+      "PowerShell($res1 = \\(Invoke-WebRequest -Uri \"http://localhost:3000/\" -UseBasicParsing\\).StatusCode; $res2 = \\(Invoke-WebRequest -Uri \"http://localhost:3000/accounts\" -UseBasicParsing\\).StatusCode; \"Home: $res1 | Accounts: $res2\")",
+      "PowerShell($res1 = \\(Invoke-WebRequest -Uri \"http://localhost:3000/accounts\" -UseBasicParsing\\).StatusCode; $res2 = \\(Invoke-WebRequest -Uri \"http://localhost:3000/rules-book\" -UseBasicParsing\\).StatusCode; \"Accounts: $res1 | Rules: $res2\")",
+      "PowerShell($resOrders = \\(Invoke-WebRequest -Uri \"http://localhost:3000/orders\" -UseBasicParsing\\).StatusCode; $resRules = \\(Invoke-WebRequest -Uri \"http://localhost:3000/rules-book\" -UseBasicParsing\\).StatusCode; \"Orders: $resOrders | Rules: $resRules\")",
+      "PowerShell($resOrders = \\(Invoke-WebRequest -Uri \"http://localhost:3000/orders\" -UseBasicParsing\\).StatusCode; $resQuot = \\(Invoke-WebRequest -Uri \"http://localhost:3000/quotations\" -UseBasicParsing\\).StatusCode; $resRules = \\(Invoke-WebRequest -Uri \"http://localhost:3000/rules-book\" -UseBasicParsing\\).StatusCode; \"Orders: $resOrders | Quotations: $resQuot | Rules: $resRules\")",
+      "PowerShell($resHome = \\(Invoke-WebRequest -Uri \"http://localhost:3000/\" -UseBasicParsing\\).StatusCode; $resAccounts = \\(Invoke-WebRequest -Uri \"http://localhost:3000/accounts\" -UseBasicParsing\\).StatusCode; \"Home: $resHome | Accounts: $resAccounts\")",
+      "PowerShell(Get-CimInstance Win32_Process -Filter \"Name = 'node.exe'\")",
+      "PowerShell(Stop-Process -Id 18436, 13300, 19416 -Force -ErrorAction SilentlyContinue)",
+      "PowerShell($resTrack = \\(Invoke-WebRequest -Uri \"http://localhost:3000/track\" -UseBasicParsing\\).StatusCode; $resTrackId = \\(Invoke-WebRequest -Uri \"http://localhost:3000/track/DTC-WO-2026-001\" -UseBasicParsing\\).StatusCode; \"Track: $resTrack | TrackId: $resTrackId\")",
+      "PowerShell(\\(Invoke-WebRequest -Uri \"http://localhost:3000/track\" -UseBasicParsing\\).Content.Substring\\(0, 500\\))",
+      "Bash(npm run *)",
+      "Bash(git init *)",
+      "Bash(git add *)",
+      "Bash(git commit *)",
+      "Bash(git rm *)"
+    ]
+  }
+}
