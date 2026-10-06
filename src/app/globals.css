@@ -165,7 +165,7 @@ body {
 
   /* Tables in Print Mode */
   table {
-    table-layout: fixed !important; /* Force table to strictly obey 100% width and not expand past A4 */
+    table-layout: auto !important; /* Allow natural cell sizing to prevent text clipping */
     width: 100% !important;
     max-width: 100% !important;
     border-collapse: collapse !important;
