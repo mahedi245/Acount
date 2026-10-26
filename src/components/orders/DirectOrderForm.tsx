@@ -108,9 +108,11 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
     setCustomPolishMode((prev) => ({ ...prev, [itemId]: !prev[itemId] }));
   };
 
-  // Dates
+  // Dates & Order Number
   const [orderDate, setOrderDate] = useState(getTodayIsoDate());
   const [expectedDeliveryDate, setExpectedDeliveryDate] = useState(addDaysToDate(getTodayIsoDate(), 10));
+  const defaultAutoOrderNum = `DTC-WO-${new Date().getFullYear()}-${String(orders.length + 1).padStart(3, '0')}`;
+  const [orderNumberInput, setOrderNumberInput] = useState(defaultAutoOrderNum);
 
   // Items
   const [items, setItems] = useState<OrderItem[]>([
@@ -161,6 +163,9 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
     if (type === 'door') {
       defaultDesc = language === 'bn' ? 'দরজার পাল্লা' : 'Door Shutter';
       defaultRate = 28000;
+    } else if (type === 'solid_deep_door' as any) {
+      defaultDesc = language === 'bn' ? 'সলিড ডিপ ডোর শাটার (Solid Deep Door Shutter)' : 'Solid Deep Door Shutter';
+      defaultRate = 35000;
     } else if (type === 'choukhat') {
       defaultDesc = language === 'bn' ? 'দরজার চৌকাঠ ফ্রেম' : 'Door Frame (Choukhat)';
       defaultRate = 7500;
@@ -179,20 +184,23 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
       defaultRate = 15000;
     }
 
+    const isSolidDeep = type === ('solid_deep_door' as any);
+    const actualItemType = isSolidDeep ? 'door' : (type as ItemType);
+
     const newItem: OrderItem = {
       id: `item-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`,
-      itemType: type as ItemType,
+      itemType: actualItemType,
       description: defaultDesc,
       woodSpecies: 'Chittagong Teak (চিটাগাং সেগুন)',
       lengthFt: type === 'choukhat' ? 17.25 : 7,
       widthIn: type === 'choukhat' ? 5.5 : 34,
-      thicknessIn: type === 'choukhat' ? 2.25 : 1.5,
+      thicknessIn: type === 'choukhat' ? 2.25 : isSolidDeep ? 1.75 : 1.5,
       quantity: 1,
       deliveredQuantity: 0,
       unitRate: defaultRate,
       rateType: defaultRateType,
-      polishType: 'Hand Polish',
-      design: 'Plain Solid',
+      polishType: isSolidDeep ? 'PU Polish' : 'Hand Polish',
+      design: isSolidDeep ? 'Plain Solid' : 'Plain Solid',
       fittingIncluded: false,
       totalAmount: defaultRate,
       productionStatus: 'pending',
@@ -248,7 +256,7 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
       return;
     }
 
-    const orderNumber = `DTC-WO-${new Date().getFullYear()}-${String(orders.length + 1).padStart(3, '0')}`;
+    const orderNumber = orderNumberInput.trim() || defaultAutoOrderNum;
     const selectedAgent = marketingAgents.find((a) => a.id === marketingAgentId);
     const selectedAcc = financialAccounts.find((a) => a.id === depositAccountId);
 
@@ -360,6 +368,19 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
         </h4>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+          <div>
+            <label className="block text-xs font-semibold text-slate-700 mb-1">
+              {language === 'bn' ? 'অর্ডার নম্বর (কাস্টম)' : 'Custom Order Number'}
+            </label>
+            <input
+              type="text"
+              required
+              value={orderNumberInput}
+              onChange={(e) => setOrderNumberInput(e.target.value)}
+              className="w-full px-3 py-2 rounded-xl bg-white border border-slate-300 text-xs sm:text-sm font-bold text-slate-900 focus:outline-none focus:ring-2 focus:ring-red-500 font-mono"
+            />
+          </div>
+
           <div>
             <label className="block text-xs font-semibold text-slate-700 mb-1">
               {language === 'bn' ? 'গ্রাহকের নাম *' : 'Customer Name *'}
@@ -518,6 +539,15 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
             >
               <Plus className="w-3 h-3" />
               <span>+ দরজার পাল্লা</span>
+            </button>
+
+            <button
+              type="button"
+              onClick={() => handleAddItem('solid_deep_door' as any)}
+              className="px-2.5 py-1.5 rounded-lg bg-red-600 hover:bg-red-700 text-white text-xs font-bold shadow-sm transition-colors flex items-center gap-1"
+            >
+              <Plus className="w-3 h-3" />
+              <span>+ সলিড ডিপ পাল্লা</span>
             </button>
 
             <button
