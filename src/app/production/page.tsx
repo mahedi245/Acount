@@ -105,6 +105,61 @@ export default function ProductionPage() {
         </div>
       </div>
 
+      {/* Quick Production Sub-Modules Navigation */}
+      <div className="grid grid-cols-2 sm:grid-cols-4 gap-3 no-print">
+        <Link
+          href="/production/kanban"
+          className="p-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl shadow-sm flex items-center gap-3 transition-all group"
+        >
+          <div className="w-9 h-9 rounded-xl bg-amber-50 text-amber-600 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+            📋
+          </div>
+          <div>
+            <p className="text-xs font-bold text-slate-900">{language === 'bn' ? 'কানবান বোর্ড' : 'Kanban Board'}</p>
+            <p className="text-[10px] text-slate-500">{language === 'bn' ? 'ফ্যাক্টরি ফ্লোর ভিউ' : 'Live Pipeline'}</p>
+          </div>
+        </Link>
+
+        <Link
+          href="/production/terminal"
+          className="p-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl shadow-sm flex items-center gap-3 transition-all group"
+        >
+          <div className="w-9 h-9 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+            🖥️
+          </div>
+          <div>
+            <p className="text-xs font-bold text-slate-900">{language === 'bn' ? 'ফ্লোর টার্মিনাল' : 'Floor Terminal'}</p>
+            <p className="text-[10px] text-slate-500">{language === 'bn' ? 'কারখানা ওয়ার্কস্টেশন' : 'Worker Station'}</p>
+          </div>
+        </Link>
+
+        <Link
+          href="/production/dispatch"
+          className="p-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl shadow-sm flex items-center gap-3 transition-all group"
+        >
+          <div className="w-9 h-9 rounded-xl bg-blue-50 text-blue-600 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+            🚚
+          </div>
+          <div>
+            <p className="text-xs font-bold text-slate-900">{language === 'bn' ? 'ডিসপ্যাচ ম্যানেজার' : 'Dispatch'}</p>
+            <p className="text-[10px] text-slate-500">{language === 'bn' ? 'চালান ও ডেলিভারি' : 'Logistics'}</p>
+          </div>
+        </Link>
+
+        <Link
+          href="/production/analytics"
+          className="p-3 bg-white hover:bg-slate-50 border border-slate-200 rounded-2xl shadow-sm flex items-center gap-3 transition-all group"
+        >
+          <div className="w-9 h-9 rounded-xl bg-purple-50 text-purple-600 flex items-center justify-center font-bold group-hover:scale-105 transition-transform">
+            📊
+          </div>
+          <div>
+            <p className="text-xs font-bold text-slate-900">{language === 'bn' ? 'অ্যানালিটিক্স' : 'Analytics'}</p>
+            <p className="text-[10px] text-slate-500">{language === 'bn' ? 'রিপোর্ট ও মেট্রিক্স' : 'Performance'}</p>
+          </div>
+        </Link>
+      </div>
+
       {/* Mode Tabs */}
       <div className="flex items-center gap-2 p-1.5 bg-white rounded-2xl border border-slate-200 shadow-sm w-fit no-print">
         <button
