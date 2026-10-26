@@ -56,6 +56,7 @@ export default function Sidebar() {
       titleBn: 'ফ্যাক্টরি ও প্রোডাকশন',
       titleEn: 'Factory & Production',
       items: [
+        { href: '/production/hub', labelBn: 'ফ্যাক্টরি সেন্ট্রাল হাব (ফুল অ্যাপ)', labelEn: 'Factory Central Hub', icon: Sparkles, badge: 'HUB', badgeColor: 'bg-red-600 text-white text-[10px]' },
         { href: '/production', labelBn: 'স-মিল ও প্রোডাকশন', labelEn: 'Sawmill', icon: Hammer, badge: null },
         { href: '/production/kanban', labelBn: 'ফ্যাক্টরি কানবান বোর্ড', labelEn: 'Kanban Board', icon: LayoutDashboard, badge: 'PROD', badgeColor: 'bg-amber-600 text-white text-[10px]' },
         { href: '/production/terminal', labelBn: 'ফ্লোর টার্মিনাল', labelEn: 'Floor Terminal', icon: ShieldCheck, badge: 'LIVE', badgeColor: 'bg-emerald-600 text-white text-[10px]' },
