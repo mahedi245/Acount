@@ -30,7 +30,11 @@
       "Bash(winget install *)",
       "Bash(pdftoppm -v)",
       "Bash(ls -la /c/Users/DTC/AppData/Local/Microsoft/WinGet/Packages/)",
-      "Bash(/c/Users/DTC/AppData/Local/Microsoft/WinGet/Packages/oschwartz10612.Poppler_Microsoft.Winget.Source_8wekyb3d8bbwe/poppler-25.07.0/Library/bin/pdftoppm.exe -png D:/APP/pdf/f.pdf D:/APP/pdf/f_page)"
+      "Bash(/c/Users/DTC/AppData/Local/Microsoft/WinGet/Packages/oschwartz10612.Poppler_Microsoft.Winget.Source_8wekyb3d8bbwe/poppler-25.07.0/Library/bin/pdftoppm.exe -png D:/APP/pdf/f.pdf D:/APP/pdf/f_page)",
+      "Bash(git remote *)",
+      "Bash(git branch *)",
+      "Bash(git push *)",
+      "Bash(npm install *)"
     ]
   }
 }
