@@ -22,7 +22,7 @@ import { useData } from '@/context/DataContext';
 
 export default function SettingsPage() {
   const { language, setLanguage, showToast, t } = useApp();
-  const { settings, updateSettings, exportDataJson, importDataJson, resetToDemoData } =
+  const { settings, updateSettings, exportDataJson, importDataJson, resetToDemoData, clearAllData } =
     useData();
 
   const [companyNameBn, setCompanyNameBn] = useState(settings.companyNameBn);
@@ -151,6 +151,22 @@ export default function SettingsPage() {
       showToast(
         language === 'bn' ? 'সিস্টেম ডেমো ডাটায় রিসেট করা হয়েছে!' : 'Reset to seed data complete!',
         'info'
+      );
+    }
+  };
+
+  const handleClearAll = () => {
+    if (
+      window.confirm(
+        language === 'bn'
+          ? 'আপনি কি নিশ্চিত যে সমস্ত এন্ট্রি (অর্ডার, কোটেশন, স্টক, অ্যাকাউন্টস, স-মিল লগ) সম্পূর্ণ মুছে ফেলতে চান? এটি আর ফেরানো যাবে না।'
+          : 'Are you sure you want to clear all entries? This cannot be undone.'
+      )
+    ) {
+      clearAllData();
+      showToast(
+        language === 'bn' ? 'সকল এন্ট্রি সফলভাবে মুছে ফেলা হয়েছে! এখন আপনি আপনার ইচ্ছামতো নতুন এন্ট্রি দিতে পারবেন।' : 'All entries cleared successfully!',
+        'success'
       );
     }
   };
@@ -554,11 +570,21 @@ export default function SettingsPage() {
             />
           </label>
 
+          {/* Clear All Data */}
+          <button
+            type="button"
+            onClick={handleClearAll}
+            className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-red-600 hover:bg-red-700 text-white text-xs font-bold transition-all shadow-md shadow-red-600/20 ml-auto"
+          >
+            <RotateCcw className="w-4 h-4 text-white" />
+            <span>{language === 'bn' ? 'সব এন্ট্রি মুছে ফেলুন (Clear All)' : 'Clear All Entries'}</span>
+          </button>
+
           {/* Reset Demo Data */}
           <button
             type="button"
             onClick={handleResetData}
-            className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-800 text-xs font-bold transition-all border border-rose-200 ml-auto"
+            className="flex items-center gap-2 px-5 py-2.5 rounded-2xl bg-rose-50 hover:bg-rose-100 text-rose-800 text-xs font-bold transition-all border border-rose-200"
           >
             <RotateCcw className="w-4 h-4" />
             <span>{language === 'bn' ? 'ফ্যাক্টরি রিসেট / ডেমো ডাটা' : 'Reset to Demo Data'}</span>

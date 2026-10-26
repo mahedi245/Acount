@@ -207,6 +207,7 @@ interface DataContextType {
   }>;
 
   resetToDemoData: () => void;
+  clearAllData: () => void;
   exportDataJson: () => string;
   importDataJson: (jsonString: string) => boolean;
 }
@@ -220,23 +221,23 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
 
   const [leads, setLeads] = useState<Lead[]>([]);
   const [settings, setSettings] = useState<CompanySettings>(initialCompanySettings);
-  const [quotations, setQuotations] = useState<Quotation[]>(initialQuotations);
-  const [orders, setOrders] = useState<Order[]>(initialOrders);
-  const [craftsmen, setCraftsmen] = useState<Craftsman[]>(initialCraftsmen);
-  const [craftsmanTasks, setCraftsmanTasks] = useState<CraftsmanTask[]>(initialCraftsmanTasks);
-  const [sawmillLogs, setSawmillLogs] = useState<SawmillLogEntry[]>(initialSawmillLogs);
-  const [interiorProjects, setInteriorProjects] = useState<InteriorProject[]>(initialInteriorProjects);
-  const [deliveryChallans, setDeliveryChallans] = useState<DeliveryChallan[]>(initialDeliveryChallans);
-  const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>(initialAttendance);
-  const [inventory, setInventory] = useState<WoodInventoryItem[]>(initialInventory);
-  const [expenses, setExpenses] = useState<ExpenseRecord[]>(initialExpenses);
+  const [quotations, setQuotations] = useState<Quotation[]>([]);
+  const [orders, setOrders] = useState<Order[]>([]);
+  const [craftsmen, setCraftsmen] = useState<Craftsman[]>([]);
+  const [craftsmanTasks, setCraftsmanTasks] = useState<CraftsmanTask[]>([]);
+  const [sawmillLogs, setSawmillLogs] = useState<SawmillLogEntry[]>([]);
+  const [interiorProjects, setInteriorProjects] = useState<InteriorProject[]>([]);
+  const [deliveryChallans, setDeliveryChallans] = useState<DeliveryChallan[]>([]);
+  const [attendanceRecords, setAttendanceRecords] = useState<AttendanceRecord[]>([]);
+  const [inventory, setInventory] = useState<WoodInventoryItem[]>([]);
+  const [expenses, setExpenses] = useState<ExpenseRecord[]>([]);
   const [customExpenseCategories, setCustomExpenseCategories] = useState<string[]>([]);
-  const [communicationLogs, setCommunicationLogs] = useState<CommunicationLog[]>(initialCommunicationLogs);
-  const [designCatalog, setDesignCatalog] = useState<DesignCatalogItem[]>(initialDesignCatalog);
-  const [marketingAgents, setMarketingAgents] = useState<MarketingAgent[]>(initialMarketingAgents);
-  const [commissionPayouts, setCommissionPayouts] = useState<MarketingCommissionPayout[]>(initialCommissionPayouts);
-  const [financialAccounts, setFinancialAccounts] = useState<FinancialAccount[]>(initialFinancialAccounts);
-  const [accountTransfers, setAccountTransfers] = useState<AccountTransfer[]>(initialAccountTransfers);
+  const [communicationLogs, setCommunicationLogs] = useState<CommunicationLog[]>([]);
+  const [designCatalog, setDesignCatalog] = useState<DesignCatalogItem[]>([]);
+  const [marketingAgents, setMarketingAgents] = useState<MarketingAgent[]>([]);
+  const [commissionPayouts, setCommissionPayouts] = useState<MarketingCommissionPayout[]>([]);
+  const [financialAccounts, setFinancialAccounts] = useState<FinancialAccount[]>([]);
+  const [accountTransfers, setAccountTransfers] = useState<AccountTransfer[]>([]);
 
   // Load from local storage
   useEffect(() => {
@@ -1383,6 +1384,28 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
     localStorage.removeItem(STORAGE_KEY);
   };
 
+  const clearAllData = () => {
+    setLeads([]);
+    setQuotations([]);
+    setOrders([]);
+    setCraftsmen([]);
+    setCraftsmanTasks([]);
+    setSawmillLogs([]);
+    setInteriorProjects([]);
+    setDeliveryChallans([]);
+    setAttendanceRecords([]);
+    setInventory([]);
+    setExpenses([]);
+    setCustomExpenseCategories([]);
+    setCommunicationLogs([]);
+    setDesignCatalog([]);
+    setMarketingAgents([]);
+    setCommissionPayouts([]);
+    setFinancialAccounts([]);
+    setAccountTransfers([]);
+    localStorage.removeItem(STORAGE_KEY);
+  };
+
   const exportDataJson = (): string => {
     return JSON.stringify(
       {
@@ -1513,6 +1536,7 @@ export function DataProvider({ children }: { children: React.ReactNode }) {
         getAllAccountsSummary,
         getAccountLedgerTransactions,
         resetToDemoData,
+        clearAllData,
         exportDataJson,
         importDataJson,
       }}
