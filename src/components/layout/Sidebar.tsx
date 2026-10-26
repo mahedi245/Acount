@@ -57,10 +57,6 @@ export default function Sidebar() {
       titleEn: 'Factory & Production',
       items: [
         { href: '/production', labelBn: 'স-মিল ও প্রোডাকশন', labelEn: 'Sawmill', icon: Hammer, badge: null },
-        { href: '/production/kanban', labelBn: 'ফ্যাক্টরি কানবান বোর্ড', labelEn: 'Kanban Board', icon: LayoutDashboard, badge: 'PROD', badgeColor: 'bg-amber-600 text-white text-[10px]' },
-        { href: '/production/terminal', labelBn: 'ফ্লোর টার্মিনাল', labelEn: 'Floor Terminal', icon: ShieldCheck, badge: 'LIVE', badgeColor: 'bg-emerald-600 text-white text-[10px]' },
-        { href: '/production/dispatch', labelBn: 'ডিসপ্যাচ ও চালান', labelEn: 'Dispatch', icon: Truck, badge: null },
-        { href: '/production/analytics', labelBn: 'প্রোডাকশন অ্যানালিটিক্স', labelEn: 'Analytics', icon: BarChart3, badge: null },
         { href: '/production/interior', labelBn: 'ইন্টেরিয়র প্রজেক্ট', labelEn: 'Interior', icon: Building2, badge: null },
         { href: '/inventory', labelBn: 'টিম্বার স্টক', labelEn: 'Timber Stock', icon: Trees, badge: null },
         { href: '/delivery', labelBn: 'ডেলিভারি ও চালান', labelEn: 'Delivery', icon: Truck, badge: null },
