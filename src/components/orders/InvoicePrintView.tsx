@@ -170,7 +170,13 @@ export default function InvoicePrintView({ order, onBack }: InvoicePrintViewProp
                     {translateWoodSpecies(item.woodSpecies, language)}
                   </td>
                   <td className="p-2.5 font-mono text-slate-700 print:text-black">
-                    {item.lengthFt}' × {item.widthIn}" × {item.thicknessIn}"
+                    {item.itemType === 'door' ? (
+                      `${item.widthIn}" × ${item.heightIn || (item.lengthFt ? Math.round(item.lengthFt * 12) : 0)}" × ${item.thicknessIn}"`
+                    ) : item.itemType === 'choukhat' ? (
+                      `${item.widthIn}" × ${item.thicknessIn}" × ${item.doorWidthIn || item.lengthIn || 30}" × ${item.heightIn || (item.lengthFt > 0 ? Math.round(((item.lengthFt * 12) - (item.doorWidthIn || item.lengthIn || 30)) / 2) : 84)}"`
+                    ) : (
+                      `${item.lengthFt}' × ${item.widthIn}" × ${item.thicknessIn}"`
+                    )}
                     {item.totalCft ? (
                       <span className="block text-[10px] text-red-700 font-bold print:text-black">
                         ({formatCft(item.totalCft, language)})

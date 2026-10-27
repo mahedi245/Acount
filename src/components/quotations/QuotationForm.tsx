@@ -191,15 +191,20 @@ export default function QuotationForm({ initialData, prefillItem, onSave, onCanc
 
     const isSolidDeep = type === ('solid_deep_door' as any);
     const actualItemType = isSolidDeep ? 'door' : (type as ItemType);
+    const isDoor = actualItemType === 'door';
+    const isChoukhat = actualItemType === 'choukhat';
 
     const newItem: QuotationItem = {
       id: `item-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`,
       itemType: actualItemType,
       description: defaultDesc,
       woodSpecies: 'Chittagong Teak (চিটাগাং সেগুন)',
-      lengthFt: type === 'choukhat' ? 17.25 : 7,
-      widthIn: type === 'choukhat' ? 5.5 : 34,
-      thicknessIn: type === 'choukhat' ? 2.25 : isSolidDeep ? 1.75 : 1.5,
+      heightIn: isDoor ? 82 : isChoukhat ? 84 : undefined,
+      doorWidthIn: isChoukhat ? 30 : undefined,
+      lengthIn: isChoukhat ? 30 : undefined,
+      lengthFt: isChoukhat ? ((84 * 2) + 30) / 12 : isDoor ? 82 / 12 : 7,
+      widthIn: isChoukhat ? 5.75 : isDoor ? 37 : 34,
+      thicknessIn: isChoukhat ? 2.25 : isSolidDeep ? 1.75 : 1.5,
       quantity: 1,
       unitRate: defaultRate,
       rateType: defaultRateType,
@@ -218,10 +223,30 @@ export default function QuotationForm({ initialData, prefillItem, onSave, onCanc
         if (i !== index) return item;
         const updated = { ...item, ...updates };
 
+        // Synchronize Door dimensions
+        if (updated.itemType === 'door') {
+          if (updates.heightIn !== undefined) {
+            const hNum = Number(updates.heightIn) || 0;
+            updated.lengthFt = hNum / 12;
+          } else if (updates.lengthFt !== undefined && updates.heightIn === undefined) {
+            updated.heightIn = Math.round(Number(updates.lengthFt) * 12);
+          }
+        }
+
+        // Synchronize Choukhat dimensions: running feet = (heightIn * 2 + doorWidthIn) / 12
+        if (updated.itemType === 'choukhat') {
+          const h = updated.heightIn !== undefined ? Number(updated.heightIn) : 84;
+          const w = updated.doorWidthIn !== undefined ? Number(updated.doorWidthIn) : (Number(updated.lengthIn) || 30);
+          updated.heightIn = h;
+          updated.doorWidthIn = w;
+          updated.lengthIn = w;
+          updated.lengthFt = ((h * 2) + w) / 12;
+        }
+
         // Recalculate CFT
         const cftRes = calculateSawnWoodCft({
           lengthFt: updated.lengthFt,
-          lengthIn: updated.lengthIn || 0,
+          lengthIn: updated.itemType === 'choukhat' ? 0 : (updated.lengthIn || 0),
           widthIn: updated.widthIn,
           widthSuuta: updated.widthSuuta || 0,
           thicknessIn: updated.thicknessIn,
@@ -649,8 +674,8 @@ export default function QuotationForm({ initialData, prefillItem, onSave, onCanc
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 mb-0.5">প্রস্থ / Width (")</label>
                         <input type="number" step="0.25" placeholder="37"
-                          value={item.widthIn}
-                          onChange={(e) => handleUpdateItem(index, { widthIn: parseFloat(e.target.value) || 0 })}
+                          value={item.widthIn ?? ''}
+                          onChange={(e) => handleUpdateItem(index, { widthIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
                         />
                       </div>
@@ -660,30 +685,30 @@ export default function QuotationForm({ initialData, prefillItem, onSave, onCanc
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 mb-0.5">উচ্চতা / Height (")</label>
                         <input type="number" step="0.25" placeholder="82"
-                          value={Math.round(item.lengthFt * 12)}
-                          onChange={(e) => handleUpdateItem(index, { lengthFt: (parseFloat(e.target.value) || 0) / 12 })}
+                          value={item.heightIn !== undefined ? item.heightIn : (item.lengthFt ? Math.round(item.lengthFt * 12) : '')}
+                          onChange={(e) => handleUpdateItem(index, { heightIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
                         />
                       </div>
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 mb-0.5">পুরুত্ব / Thick (")</label>
                         <input type="number" step="0.25" placeholder="1.5"
-                          value={item.thicknessIn}
-                          onChange={(e) => handleUpdateItem(index, { thicknessIn: parseFloat(e.target.value) || 0 })}
+                          value={item.thicknessIn ?? ''}
+                          onChange={(e) => handleUpdateItem(index, { thicknessIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
                         />
                       </div>
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 mb-0.5">পরিমাণ (পিস)</label>
                         <input type="number" min="1"
-                          value={item.quantity}
-                          onChange={(e) => handleUpdateItem(index, { quantity: parseInt(e.target.value) || 1 })}
+                          value={item.quantity ?? ''}
+                          onChange={(e) => handleUpdateItem(index, { quantity: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
                         />
                       </div>
                     </div>
                     <p className="text-[10px] text-slate-400 font-mono">
-                      সাইজ: {item.widthIn}" × {Math.round(item.lengthFt * 12)}" × {item.thicknessIn}" | CFT: {item.cftPerPiece?.toFixed(3) || '—'} × {item.quantity} = {item.totalCft?.toFixed(3) || '—'} CFT
+                      সাইজ: {item.widthIn}" × {item.heightIn || (item.lengthFt ? Math.round(item.lengthFt * 12) : 0)}" × {item.thicknessIn}" | CFT: {item.cftPerPiece?.toFixed(3) || '—'} × {item.quantity} = {item.totalCft?.toFixed(3) || '—'} CFT
                     </p>
                   </div>
                 )}
@@ -699,50 +724,46 @@ export default function QuotationForm({ initialData, prefillItem, onSave, onCanc
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 mb-0.5">ফ্রেম প্রস্থ (")</label>
                         <input type="number" step="0.25" placeholder="5.75"
-                          value={item.widthIn}
-                          onChange={(e) => handleUpdateItem(index, { widthIn: parseFloat(e.target.value) || 0 })}
+                          value={item.widthIn ?? ''}
+                          onChange={(e) => handleUpdateItem(index, { widthIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 text-xs font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
                         />
                       </div>
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 mb-0.5">পুরুত্ব (")</label>
                         <input type="number" step="0.25" placeholder="2.25"
-                          value={item.thicknessIn}
-                          onChange={(e) => handleUpdateItem(index, { thicknessIn: parseFloat(e.target.value) || 0 })}
+                          value={item.thicknessIn ?? ''}
+                          onChange={(e) => handleUpdateItem(index, { thicknessIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 text-xs font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
                         />
                       </div>
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 mb-0.5">দরজা প্রস্থ (")</label>
                         <input type="number" step="0.25" placeholder="30"
-                          value={item.lengthIn || 0}
-                          onChange={(e) => handleUpdateItem(index, { lengthIn: parseFloat(e.target.value) || 0 })}
+                          value={item.doorWidthIn !== undefined ? item.doorWidthIn : (item.lengthIn || '')}
+                          onChange={(e) => handleUpdateItem(index, { doorWidthIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 text-xs font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
                         />
                       </div>
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 mb-0.5">উচ্চতা (")</label>
                         <input type="number" step="0.25" placeholder="84"
-                          value={Math.round(item.lengthFt * 12)}
-                          onChange={(e) => {
-                            const hIn = parseFloat(e.target.value) || 0;
-                            const doorW = item.lengthIn || 30;
-                            handleUpdateItem(index, { lengthFt: ((hIn * 2) + doorW) / 12 });
-                          }}
+                          value={item.heightIn !== undefined ? item.heightIn : 84}
+                          onChange={(e) => handleUpdateItem(index, { heightIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 text-xs font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
                         />
                       </div>
                       <div>
                         <label className="block text-[10px] font-bold text-slate-500 mb-0.5">পরিমাণ (সেট)</label>
                         <input type="number" min="1"
-                          value={item.quantity}
-                          onChange={(e) => handleUpdateItem(index, { quantity: parseInt(e.target.value) || 1 })}
+                          value={item.quantity ?? ''}
+                          onChange={(e) => handleUpdateItem(index, { quantity: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 text-xs font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
                         />
                       </div>
                     </div>
                     <p className="text-[10px] text-amber-700 font-mono">
-                      {item.widthIn}" × {item.thicknessIn}" × ({(item.lengthIn || 0)}" + উচ্চতা) | CFT: {item.totalCft?.toFixed(3) || '—'} CFT
+                      সাইজ: {item.widthIn}" × {item.thicknessIn}" × {item.doorWidthIn || item.lengthIn || 30}" × {item.heightIn || 84}" | CFT: {item.totalCft?.toFixed(3) || '—'} CFT
                     </p>
                   </div>
                 )}

@@ -121,8 +121,9 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
       itemType: 'door',
       description: language === 'bn' ? 'সলিড সেগুন পাল্লা (Main Door)' : 'Solid Teak Door Shutter',
       woodSpecies: 'Chittagong Teak (চিটাগাং সেগুন)',
-      lengthFt: 7,
-      widthIn: 34,
+      lengthFt: 82 / 12,
+      heightIn: 82,
+      widthIn: 37,
       thicknessIn: 1.5,
       quantity: 1,
       deliveredQuantity: 0,
@@ -187,14 +188,20 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
     const isSolidDeep = type === ('solid_deep_door' as any);
     const actualItemType = isSolidDeep ? 'door' : (type as ItemType);
 
+    const isDoor = actualItemType === 'door';
+    const isChoukhat = actualItemType === 'choukhat';
+
     const newItem: OrderItem = {
       id: `item-${Date.now()}-${Math.random().toString(36).substring(2, 5)}`,
       itemType: actualItemType,
       description: defaultDesc,
       woodSpecies: 'Chittagong Teak (চিটাগাং সেগুন)',
-      lengthFt: type === 'choukhat' ? 17.25 : 7,
-      widthIn: type === 'choukhat' ? 5.5 : 34,
-      thicknessIn: type === 'choukhat' ? 2.25 : isSolidDeep ? 1.75 : 1.5,
+      heightIn: isDoor ? 82 : isChoukhat ? 84 : undefined,
+      doorWidthIn: isChoukhat ? 30 : undefined,
+      lengthIn: isChoukhat ? 30 : undefined,
+      lengthFt: isChoukhat ? ((84 * 2) + 30) / 12 : isDoor ? 82 / 12 : 7,
+      widthIn: isChoukhat ? 5.75 : isDoor ? 37 : 34,
+      thicknessIn: isChoukhat ? 2.25 : isSolidDeep ? 1.75 : 1.5,
       quantity: 1,
       deliveredQuantity: 0,
       unitRate: defaultRate,
@@ -215,10 +222,30 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
         if (i !== index) return item;
         const updated = { ...item, ...updates };
 
+        // Synchronize Door dimensions
+        if (updated.itemType === 'door') {
+          if (updates.heightIn !== undefined) {
+            const hNum = Number(updates.heightIn) || 0;
+            updated.lengthFt = hNum / 12;
+          } else if (updates.lengthFt !== undefined && updates.heightIn === undefined) {
+            updated.heightIn = Math.round(Number(updates.lengthFt) * 12);
+          }
+        }
+
+        // Synchronize Choukhat dimensions: running feet = (heightIn * 2 + doorWidthIn) / 12
+        if (updated.itemType === 'choukhat') {
+          const h = updated.heightIn !== undefined ? Number(updated.heightIn) : 84;
+          const w = updated.doorWidthIn !== undefined ? Number(updated.doorWidthIn) : (Number(updated.lengthIn) || 30);
+          updated.heightIn = h;
+          updated.doorWidthIn = w;
+          updated.lengthIn = w;
+          updated.lengthFt = ((h * 2) + w) / 12;
+        }
+
         // Recalculate CFT
         const cftRes = calculateSawnWoodCft({
           lengthFt: updated.lengthFt,
-          lengthIn: updated.lengthIn || 0,
+          lengthIn: updated.itemType === 'choukhat' ? 0 : (updated.lengthIn || 0),
           widthIn: updated.widthIn,
           widthSuuta: updated.widthSuuta || 0,
           thicknessIn: updated.thicknessIn,
@@ -792,8 +819,8 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
                           type="number"
                           step="0.25"
                           placeholder="37"
-                          value={item.widthIn}
-                          onChange={(e) => handleUpdateItem(index, { widthIn: Number(e.target.value) })}
+                          value={item.widthIn ?? ''}
+                          onChange={(e) => handleUpdateItem(index, { widthIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-300 font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
                         />
                       </div>
@@ -806,8 +833,8 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
                           type="number"
                           step="0.25"
                           placeholder="82"
-                          value={Math.round(item.lengthFt * 12)}
-                          onChange={(e) => handleUpdateItem(index, { lengthFt: Number(e.target.value) / 12 })}
+                          value={item.heightIn !== undefined ? item.heightIn : (item.lengthFt ? Math.round(item.lengthFt * 12) : '')}
+                          onChange={(e) => handleUpdateItem(index, { heightIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-300 font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
                         />
                       </div>
@@ -817,8 +844,8 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
                           type="number"
                           step="0.25"
                           placeholder="1.5"
-                          value={item.thicknessIn}
-                          onChange={(e) => handleUpdateItem(index, { thicknessIn: Number(e.target.value) })}
+                          value={item.thicknessIn ?? ''}
+                          onChange={(e) => handleUpdateItem(index, { thicknessIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-300 font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
                         />
                       </div>
@@ -827,14 +854,14 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
                         <input
                           type="number"
                           min="1"
-                          value={item.quantity}
-                          onChange={(e) => handleUpdateItem(index, { quantity: Number(e.target.value) })}
+                          value={item.quantity ?? ''}
+                          onChange={(e) => handleUpdateItem(index, { quantity: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-300 font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
                         />
                       </div>
                     </div>
                     <p className="text-[10px] text-slate-400 mt-1 font-mono">
-                      সাইজ: {item.widthIn}" × {Math.round(item.lengthFt * 12)}" × {item.thicknessIn}" | CFT: {item.cftPerPiece?.toFixed(3) || '—'} × {item.quantity} = {item.totalCft?.toFixed(3) || '—'} CFT
+                      সাইজ: {item.widthIn}" × {item.heightIn || (item.lengthFt ? Math.round(item.lengthFt * 12) : 0)}" × {item.thicknessIn}" | CFT: {item.cftPerPiece?.toFixed(3) || '—'} × {item.quantity} = {item.totalCft?.toFixed(3) || '—'} CFT
                     </p>
                   </div>
                 )}
@@ -853,8 +880,8 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
                           type="number"
                           step="0.25"
                           placeholder="5.75"
-                          value={item.widthIn}
-                          onChange={(e) => handleUpdateItem(index, { widthIn: Number(e.target.value) })}
+                          value={item.widthIn ?? ''}
+                          onChange={(e) => handleUpdateItem(index, { widthIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
                         />
                       </div>
@@ -864,8 +891,8 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
                           type="number"
                           step="0.25"
                           placeholder="2.25"
-                          value={item.thicknessIn}
-                          onChange={(e) => handleUpdateItem(index, { thicknessIn: Number(e.target.value) })}
+                          value={item.thicknessIn ?? ''}
+                          onChange={(e) => handleUpdateItem(index, { thicknessIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
                         />
                       </div>
@@ -875,8 +902,8 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
                           type="number"
                           step="0.25"
                           placeholder="30"
-                          value={item.lengthIn || 0}
-                          onChange={(e) => handleUpdateItem(index, { lengthIn: Number(e.target.value) })}
+                          value={item.doorWidthIn !== undefined ? item.doorWidthIn : (item.lengthIn || '')}
+                          onChange={(e) => handleUpdateItem(index, { doorWidthIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
                         />
                       </div>
@@ -886,14 +913,8 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
                           type="number"
                           step="0.25"
                           placeholder="84"
-                          value={Math.round(item.lengthFt * 12)}
-                          onChange={(e) => {
-                            const door_height_in = Number(e.target.value);
-                            // Running feet = (height*2 + door_width_in) / 12
-                            const doorWidthIn = item.lengthIn || 30;
-                            const rft = ((door_height_in * 2) + doorWidthIn) / 12;
-                            handleUpdateItem(index, { lengthFt: rft });
-                          }}
+                          value={item.heightIn !== undefined ? item.heightIn : 84}
+                          onChange={(e) => handleUpdateItem(index, { heightIn: e.target.value === '' ? ('' as any) : Number(e.target.value) })}
                           className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
                         />
                       </div>
@@ -909,7 +930,7 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
                       </div>
                     </div>
                     <p className="text-[10px] text-slate-400 mt-1 font-mono">
-                      {item.widthIn}" × {item.thicknessIn}" × ({(item.lengthIn || 0)}" + {Math.round(item.lengthFt * 12) > 0 ? Math.round(((item.lengthFt * 12) - (item.lengthIn || 0)) / 2) : '?'}"×2) | CFT: {item.totalCft?.toFixed(3) || '—'} CFT
+                      সাইজ: {item.widthIn}" × {item.thicknessIn}" × {item.doorWidthIn || item.lengthIn || 30}" × {item.heightIn || 84}" | CFT: {item.totalCft?.toFixed(3) || '—'} CFT
                     </p>
                   </div>
                 )}

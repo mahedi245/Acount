@@ -271,9 +271,12 @@ export default function OrdersPage() {
                     // Build size string based on item type
                     let sizeStr = '';
                     if (it.itemType === 'door') {
-                      sizeStr = `${it.widthIn}"×${Math.round(it.lengthFt * 12)}"×${it.thicknessIn}"`;
+                      const h = it.heightIn || (it.lengthFt ? Math.round(it.lengthFt * 12) : 0);
+                      sizeStr = `${it.widthIn}"×${h}"×${it.thicknessIn}"`;
                     } else if (it.itemType === 'choukhat') {
-                      sizeStr = `${it.widthIn}"×${it.thicknessIn}"×${it.lengthIn || 0}"×${Math.round(it.lengthFt * 12)}"`;
+                      const dw = it.doorWidthIn || it.lengthIn || 30;
+                      const h = it.heightIn || (it.lengthFt > 0 ? Math.round(((it.lengthFt * 12) - dw) / 2) : 84);
+                      sizeStr = `${it.widthIn}"×${it.thicknessIn}"×${dw}"×${h}"`;
                     } else if (it.lengthFt > 0 || it.widthIn > 0) {
                       sizeStr = `${it.lengthFt}ft×${it.widthIn}"×${it.thicknessIn}"`;
                     }

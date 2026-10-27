@@ -27,6 +27,8 @@ export interface QuotationItem {
   // Dimensions
   lengthFt: number;
   lengthIn?: number;
+  heightIn?: number;
+  doorWidthIn?: number;
   widthIn: number;
   widthSuuta?: number; // 1/8 of an inch
   thicknessIn: number;
