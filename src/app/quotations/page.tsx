@@ -245,15 +245,30 @@ function QuotationsContent() {
 
               {/* Items Preview Chips */}
               <div className="flex flex-wrap gap-2 text-xs">
-                {quotation.items.map((it, idx) => (
-                  <span
-                    key={idx}
-                    className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 font-medium"
-                  >
-                    <span className="w-1.5 h-1.5 rounded-full bg-red-600" />
-                    <strong>{it.quantity}x</strong> {it.description} ({translateWoodSpecies(it.woodSpecies, language)})
-                  </span>
-                ))}
+                {quotation.items.map((it, idx) => {
+                  let sizeStr = '';
+                  if (it.itemType === 'door') {
+                    sizeStr = `${it.widthIn}"×${Math.round(it.lengthFt * 12)}"×${it.thicknessIn}"`;
+                  } else if (it.itemType === 'choukhat') {
+                    sizeStr = `${it.widthIn}"×${it.thicknessIn}"×${it.lengthIn || 0}"×${Math.round(it.lengthFt * 12)}"`;
+                  } else if (it.lengthFt > 0 || it.widthIn > 0) {
+                    sizeStr = `${it.lengthFt}ft×${it.widthIn}"×${it.thicknessIn}"`;
+                  }
+                  return (
+                    <span
+                      key={idx}
+                      className="inline-flex items-center gap-1.5 px-3 py-1 rounded-xl bg-slate-50 border border-slate-200 text-slate-700 font-medium"
+                    >
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-600" />
+                      <strong>{it.quantity}x</strong> {it.description} ({translateWoodSpecies(it.woodSpecies, language)})
+                      {sizeStr && (
+                        <span className="text-[10px] font-mono text-red-700 bg-red-50 px-1.5 py-0.5 rounded-md border border-red-200">
+                          {sizeStr}
+                        </span>
+                      )}
+                    </span>
+                  );
+                })}
               </div>
 
               {/* Footer info & Action Buttons */}
