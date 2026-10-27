@@ -160,6 +160,11 @@ export default function InvoicePrintView({ order, onBack }: InvoicePrintViewProp
                       {item.design && <span>• {translateDoorDesign(item.design, language)}</span>}
                       {item.polishType && <span>• {translatePolishType(item.polishType, language)}</span>}
                     </div>
+                    {item.notes && (
+                      <p className="text-[10px] text-amber-800 bg-amber-50 print:bg-transparent px-1.5 py-0.5 rounded mt-1 font-medium border border-amber-200 print:border-none inline-block">
+                        📝 নোট: {item.notes}
+                      </p>
+                    )}
                   </td>
                   <td className="p-2.5 font-medium text-slate-700 print:text-black">
                     {translateWoodSpecies(item.woodSpecies, language)}

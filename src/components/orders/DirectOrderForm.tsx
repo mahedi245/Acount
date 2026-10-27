@@ -971,7 +971,7 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
                 )}
 
                 {/* Rate & Total row — always shown */}
-                <div className="grid grid-cols-2 gap-2 pt-1 border-t border-slate-200">
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 pt-1 border-t border-slate-200">
                   <div>
                     <label className="block text-[10px] font-bold text-slate-500 mb-0.5">দর / রেট (৳)</label>
                     <input
@@ -982,12 +982,28 @@ export default function DirectOrderForm({ onSave, onCancel }: DirectOrderFormPro
                       className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-200 font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
                     />
                   </div>
-                  <div className="text-right flex flex-col justify-center">
-                    <span className="block text-[10px] font-bold text-slate-500">আইটেম মোট</span>
-                    <span className="text-base font-black text-slate-900 font-mono">
-                      {formatCurrency(item.totalAmount, language)}
-                    </span>
+                  <div className="flex items-center justify-between sm:justify-end gap-4">
+                    <div className="text-right flex flex-col justify-center">
+                      <span className="block text-[10px] font-bold text-slate-500">আইটেম মোট</span>
+                      <span className="text-base font-black text-slate-900 font-mono">
+                        {formatCurrency(item.totalAmount, language)}
+                      </span>
+                    </div>
                   </div>
+                </div>
+
+                {/* Item-specific Note */}
+                <div>
+                  <label className="block text-[10px] font-bold text-slate-500 mb-0.5">
+                    {language === 'bn' ? 'আইটেম নোট / বিশেষ নির্দেশনা (ঐচ্ছিক)' : 'Item Note / Special Instructions (Optional)'}
+                  </label>
+                  <input
+                    type="text"
+                    placeholder={language === 'bn' ? 'যেমন: পাল্লার একপাশে গ্লাস কাটিং হবে, লক হোল করতে হবে...' : 'e.g. Glass cutting on one side...'}
+                    value={item.notes || ''}
+                    onChange={(e) => handleUpdateItem(index, { notes: e.target.value })}
+                    className="w-full px-2.5 py-1 rounded-lg bg-amber-50/50 border border-amber-200 text-xs text-slate-800 font-medium focus:ring-1 focus:ring-amber-500 focus:outline-none"
+                  />
                 </div>
               </div>
             </div>

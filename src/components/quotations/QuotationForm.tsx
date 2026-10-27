@@ -913,6 +913,20 @@ export default function QuotationForm({ initialData, prefillItem, onSave, onCanc
                   ) : null}
                 </div>
               </div>
+
+              {/* Item-specific Note */}
+              <div className="pt-1">
+                <label className="block text-[10px] font-bold text-slate-500 mb-0.5">
+                  {language === 'bn' ? 'আইটেম নোট / বিশেষ নির্দেশনা (ঐচ্ছিক)' : 'Item Note / Special Instructions (Optional)'}
+                </label>
+                <input
+                  type="text"
+                  placeholder={language === 'bn' ? 'যেমন: পাল্লার একপাশে গ্লাস কাটিং হবে, লক হোল করতে হবে...' : 'e.g. Glass cutting on one side...'}
+                  value={item.notes || ''}
+                  onChange={(e) => handleUpdateItem(index, { notes: e.target.value })}
+                  className="w-full px-2.5 py-1 rounded-lg bg-amber-50/50 border border-amber-200 text-xs text-slate-800 font-medium focus:ring-1 focus:ring-amber-500 focus:outline-none"
+                />
+              </div>
             </div>
           ))}
         </div>
