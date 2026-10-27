@@ -636,45 +636,152 @@ export default function QuotationForm({ initialData, prefillItem, onSave, onCanc
                   )}
                 </div>
 
-                {/* Dimensions (L x W x T) */}
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                    {language === 'bn' ? 'দৈর্ঘ্য (ফুট)' : 'Length (Ft)'}
-                  </label>
-                  <input
-                    type="number"
-                    step="0.5"
-                    value={item.lengthFt}
-                    onChange={(e) => handleUpdateItem(index, { lengthFt: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold"
-                  />
-                </div>
+                {/* Dimensions (L x W x T) — context-aware by item type */}
 
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                    {language === 'bn' ? 'প্রস্থ (ইঞ্চি)' : 'Width (In)'}
-                  </label>
-                  <input
-                    type="number"
-                    step="0.25"
-                    value={item.widthIn}
-                    onChange={(e) => handleUpdateItem(index, { widthIn: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold"
-                  />
-                </div>
+                {/* DOOR: Width × Height in inches */}
+                {item.itemType === 'door' && (
+                  <div className="sm:col-span-4 space-y-2 bg-slate-50 p-3 rounded-xl border border-slate-200">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black text-red-700 bg-red-50 px-2 py-0.5 rounded-full border border-red-200">দরজার পাল্লার সাইজ</span>
+                      <span className="text-[10px] text-slate-500 font-mono">প্রস্থ" × উচ্চতা"</span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 items-center">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-0.5">প্রস্থ / Width (")</label>
+                        <input type="number" step="0.25" placeholder="37"
+                          value={item.widthIn}
+                          onChange={(e) => handleUpdateItem(index, { widthIn: parseFloat(e.target.value) || 0 })}
+                          className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
+                        />
+                      </div>
+                      <div className="flex items-end justify-center pb-1.5">
+                        <span className="text-base font-black text-slate-400">×</span>
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-0.5">উচ্চতা / Height (")</label>
+                        <input type="number" step="0.25" placeholder="82"
+                          value={Math.round(item.lengthFt * 12)}
+                          onChange={(e) => handleUpdateItem(index, { lengthFt: (parseFloat(e.target.value) || 0) / 12 })}
+                          className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-0.5">পুরুত্ব / Thick (")</label>
+                        <input type="number" step="0.25" placeholder="1.5"
+                          value={item.thicknessIn}
+                          onChange={(e) => handleUpdateItem(index, { thicknessIn: parseFloat(e.target.value) || 0 })}
+                          className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-0.5">পরিমাণ (পিস)</label>
+                        <input type="number" min="1"
+                          value={item.quantity}
+                          onChange={(e) => handleUpdateItem(index, { quantity: parseInt(e.target.value) || 1 })}
+                          className="w-full px-2 py-1.5 rounded-lg bg-white border border-slate-300 text-xs font-mono font-bold focus:ring-1 focus:ring-red-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-slate-400 font-mono">
+                      সাইজ: {item.widthIn}" × {Math.round(item.lengthFt * 12)}" × {item.thicknessIn}" | CFT: {item.cftPerPiece?.toFixed(3) || '—'} × {item.quantity} = {item.totalCft?.toFixed(3) || '—'} CFT
+                    </p>
+                  </div>
+                )}
 
-                <div>
-                  <label className="block text-[11px] font-semibold text-slate-600 mb-1">
-                    {language === 'bn' ? 'পুরুত্ব (ইঞ্চি)' : 'Thick (In)'}
-                  </label>
-                  <input
-                    type="number"
-                    step="0.25"
-                    value={item.thicknessIn}
-                    onChange={(e) => handleUpdateItem(index, { thicknessIn: parseFloat(e.target.value) || 0 })}
-                    className="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold"
-                  />
-                </div>
+                {/* CHOUKHAT FRAME: FrameWidth × FrameThick × DoorWidth × DoorHeight */}
+                {item.itemType === 'choukhat' && (
+                  <div className="sm:col-span-4 space-y-2 bg-amber-50/60 p-3 rounded-xl border border-amber-200">
+                    <div className="flex items-center gap-2">
+                      <span className="text-[10px] font-black text-amber-800 bg-amber-100 px-2 py-0.5 rounded-full border border-amber-300">চৌকাঠ ফ্রেম সাইজ</span>
+                      <span className="text-[10px] text-slate-500 font-mono">ফ্রেম প্রস্থ" × পুরুত্ব" × দরজা প্রস্থ" × উচ্চতা"</span>
+                    </div>
+                    <div className="grid grid-cols-2 sm:grid-cols-5 gap-2 items-center">
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-0.5">ফ্রেম প্রস্থ (")</label>
+                        <input type="number" step="0.25" placeholder="5.75"
+                          value={item.widthIn}
+                          onChange={(e) => handleUpdateItem(index, { widthIn: parseFloat(e.target.value) || 0 })}
+                          className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 text-xs font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-0.5">পুরুত্ব (")</label>
+                        <input type="number" step="0.25" placeholder="2.25"
+                          value={item.thicknessIn}
+                          onChange={(e) => handleUpdateItem(index, { thicknessIn: parseFloat(e.target.value) || 0 })}
+                          className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 text-xs font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-0.5">দরজা প্রস্থ (")</label>
+                        <input type="number" step="0.25" placeholder="30"
+                          value={item.lengthIn || 0}
+                          onChange={(e) => handleUpdateItem(index, { lengthIn: parseFloat(e.target.value) || 0 })}
+                          className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 text-xs font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-0.5">উচ্চতা (")</label>
+                        <input type="number" step="0.25" placeholder="84"
+                          value={Math.round(item.lengthFt * 12)}
+                          onChange={(e) => {
+                            const hIn = parseFloat(e.target.value) || 0;
+                            const doorW = item.lengthIn || 30;
+                            handleUpdateItem(index, { lengthFt: ((hIn * 2) + doorW) / 12 });
+                          }}
+                          className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 text-xs font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
+                        />
+                      </div>
+                      <div>
+                        <label className="block text-[10px] font-bold text-slate-500 mb-0.5">পরিমাণ (সেট)</label>
+                        <input type="number" min="1"
+                          value={item.quantity}
+                          onChange={(e) => handleUpdateItem(index, { quantity: parseInt(e.target.value) || 1 })}
+                          className="w-full px-2 py-1.5 rounded-lg bg-white border border-amber-300 text-xs font-mono font-bold focus:ring-1 focus:ring-amber-500 focus:outline-none"
+                        />
+                      </div>
+                    </div>
+                    <p className="text-[10px] text-amber-700 font-mono">
+                      {item.widthIn}" × {item.thicknessIn}" × ({(item.lengthIn || 0)}" + উচ্চতা) | CFT: {item.totalCft?.toFixed(3) || '—'} CFT
+                    </p>
+                  </div>
+                )}
+
+                {/* OTHER ITEMS: standard L×W×T */}
+                {item.itemType !== 'door' && item.itemType !== 'choukhat' && (
+                  <>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                        {language === 'bn' ? 'দৈর্ঘ্য (ফুট)' : 'Length (Ft)'}
+                      </label>
+                      <input type="number" step="0.5"
+                        value={item.lengthFt}
+                        onChange={(e) => handleUpdateItem(index, { lengthFt: parseFloat(e.target.value) || 0 })}
+                        className="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                        {language === 'bn' ? 'প্রস্থ (ইঞ্চি)' : 'Width (In)'}
+                      </label>
+                      <input type="number" step="0.25"
+                        value={item.widthIn}
+                        onChange={(e) => handleUpdateItem(index, { widthIn: parseFloat(e.target.value) || 0 })}
+                        className="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold"
+                      />
+                    </div>
+                    <div>
+                      <label className="block text-[11px] font-semibold text-slate-600 mb-1">
+                        {language === 'bn' ? 'পুরুত্ব (ইঞ্চি)' : 'Thick (In)'}
+                      </label>
+                      <input type="number" step="0.25"
+                        value={item.thicknessIn}
+                        onChange={(e) => handleUpdateItem(index, { thicknessIn: parseFloat(e.target.value) || 0 })}
+                        className="w-full px-3 py-1.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold"
+                      />
+                    </div>
+                  </>
+                )}
 
                 {/* Design */}
                 <div>
